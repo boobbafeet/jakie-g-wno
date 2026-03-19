@@ -1,791 +1,165 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SCHEMARCHITECT v40 - NATYCHMIAST DZIAŁA</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: system-ui, sans-serif;
-      background: linear-gradient(135deg, #1e1b4b 0%, #3b82f6 50%, #1e293b 100%);
-      color: white;
-      min-height: 100vh;
-      padding: 2rem;
-    }
-    .glass {
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 2rem;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    }
-    button {
-      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-      color: white;
-      border: none;
-      padding: 1rem 2rem;
-      border-radius: 1rem;
-      font-weight: 600;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 10px 30px rgba(59,130,246,0.3);
-    }
-    button:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 15px 40px rgba(59,130,246,0.5);
-    }
-    button:active {
-      transform: translateY(-1px);
-    }
-    button.success {
-      background: linear-gradient(135deg, #10b981, #059669);
-      box-shadow: 0 10px 30px rgba(16,185,129,0.3);
-    }
-    button.orange {
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      box-shadow: 0 10px 30px rgba(245,158,11,0.3);
-    }
-    button.purple {
-      background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-      box-shadow: 0 10px 30px rgba(139,92,246,0.3);
-    }
-    pre {
-      background: rgba(15,23,42,0.95);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 1rem;
-      padding: 2rem;
-      font-family: 'Monaco', 'Menlo', monospace;
-      font-size: 14px;
-      line-height: 1.6;
-      max-height: 500px;
-      overflow: auto;
-      white-space: pre-wrap;
-      word-break: break-all;
-    }
-    .tab {
-      flex: 1;
-      padding: 1.5rem;
-      margin: 0 0.5rem;
-      border-radius: 1rem;
-      font-weight: 600;
-      font-size: 1rem;
-      background: rgba(255,255,255,0.1);
-      color: white;
-      border: 1px solid rgba(255,255,255,0.2);
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    .tab.active {
-      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-      box-shadow: 0 10px 30px rgba(59,130,246,0.5);
-    }
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
-    #toast {
-      position: fixed;
-      top: 2rem;
-      right: 2rem;
-      background: rgba(16,185,129,0.95);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255,255,255,0.3);
-      border-radius: 1rem;
-      padding: 1.5rem 2rem;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-      transform: translateX(100%);
-      opacity: 0;
-      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      z-index: 10000;
-      min-width: 300px;
-    }
-    #toast.show {
-      transform: translateX(0);
-      opacity: 1;
-    }
-    input {
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255,255,255,0.3);
-      border-radius: 1rem;
-      padding: 1.5rem;
-      color: white;
-      font-size: 1.2rem;
-      width: 100%;
-    }
-    input::placeholder { color: rgba(255,255,255,0.6); }
-    input:focus {
-      outline: none;
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 4px rgba(59,130,246,0.2);
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCHEMARCHITECT v40</title>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+body {
+  font-family: system-ui, sans-serif;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: white;
+  margin: 0;
+  padding: 20px;
+}
+.glass {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
+}
+button {
+  border: none;
+  border-radius: 14px;
+  padding: 14px 24px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.primary {
+  background: linear-gradient(135deg,#3b82f6,#1d4ed8);
+}
+.success {
+  background: linear-gradient(135deg,#10b981,#059669);
+}
+pre {
+  background: #0f172a;
+  padding: 20px;
+  border-radius: 12px;
+  overflow: auto;
+  max-height: 400px;
+}
+.tab-active {
+  background: #3b82f6;
+}
+.hidden { display:none; }
+</style>
 </head>
+
 <body>
-  <main class="max-w-6xl mx-auto space-y-12">
-    
-    <!-- TYTUŁ -->
-    <div class="text-center py-16">
-      <h1 class="text-6xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 bg-clip-text text-transparent mb-8">
-        SCHEMARCHITECT v40
-      </h1>
-      <p class="text-2xl max-w-3xl mx-auto opacity-90 leading-relaxed">
-        Kliknij <strong>KAŻDY</strong> przycisk – DZIAŁA NATYCHMIAST
-      </p>
+
+<div class="max-w-4xl mx-auto space-y-10">
+
+<h1 class="text-4xl font-bold text-center">SCHEMARCHITECT v40</h1>
+
+<!-- INPUT -->
+<div class="glass p-6">
+  <div class="flex gap-4">
+    <input id="urlInput" type="url" placeholder="https://example.com"
+      class="flex-1 p-4 bg-white/10 rounded-xl">
+    <button id="startBtn" class="primary">ANALIZUJ</button>
+  </div>
+</div>
+
+<!-- LOADER -->
+<div id="loader" class="glass p-6 text-center hidden">
+  Analizuję...
+</div>
+
+<!-- RESULTS -->
+<div id="results" class="hidden space-y-6">
+
+  <div class="glass p-6 flex justify-between items-center">
+    <div>
+      <div id="type">Product</div>
+      <div id="summary">1 schema</div>
     </div>
-
-    <!-- INPUT + GŁÓWNY BUTTON -->
-    <div style="background: rgba(255,255,255,0.08); backdrop-filter: blur(30px); border-radius: 2rem; padding: 3rem; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 30px 80px rgba(0,0,0,0.4);">
-      <div style="display: flex; flex-direction: column; gap: 2rem; align-items: center;">
-        <input id="urlField" type="url" placeholder="Wpisz URL: https://example.com/produkt" 
-               style="flex: 1; min-width: 400px;">
-        <button id="analyzeButton" style="min-width: 300px; padding: 1.5rem 3rem; font-size: 1.4rem;">
-          🚀 ANALIZUJ STRONĘ TERAZ
-        </button>
-        <button id="quickDemo" style="background: linear-gradient(135deg, #ef4444, #dc2626); box-shadow: 0 10px 30px rgba(239,68,68,0.4); min-width: 200px;">
-          ⚡ SZYBKI TEST
-        </button>
-      </div>
+    <div class="flex gap-2">
+      <button id="generateBtn" class="success">GENERUJ</button>
+      <button id="copyBtn">KOPIUJ</button>
     </div>
+  </div>
 
-    <!-- LOADING -->
-    <div id="loadingScreen" style="display: none; text-align: center; padding: 4rem; background: rgba(255,255,255,0.05); border-radius: 2rem; border: 2px solid #3b82f6;">
-      <div style="width: 80px; height: 80px; border: 4px solid #3b82f6; border-top: 4px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 2rem;"></div>
-      <div id="loadingText" style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Analizuję Schema.org...</div>
-      <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
-        <div id="progressBar" style="height: 100%; background: linear-gradient(90deg, #3b82f6, #60a5fa); width: 0%; transition: width 0.3s; border-radius: 4px;"></div>
-      </div>
-    </div>
+  <!-- TABS -->
+  <div class="flex gap-2">
+    <button class="tab tab-active" data-tab="existing">Istniejące</button>
+    <button class="tab" data-tab="generated">Wygenerowane</button>
+  </div>
 
-    <!-- WYNIKI -->
-    <div id="results" style="display: none;">
-      
-      <!-- SUMMARY -->
-      <div style="background: rgba(16,185,129,0.2); border: 2px solid rgba(16,185,129,0.5); border-radius: 2rem; padding: 3rem; margin-bottom: 2rem;">
-        <div style="display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; justify-content: space-between;">
-          <div>
-            <div id="detectedType" style="display: inline-block; background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 1rem 2rem; border-radius: 3rem; font-weight: bold; font-size: 1.3rem; margin-bottom: 1rem;">Product</div>
-            <div id="summaryStats" style="font-size: 1.8rem; font-weight: bold;">1 schemat | 3 sugestie</div>
-          </div>
-          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-            <button id="generateBtn" class="success" style="padding: 1rem 2.5rem; font-size: 1.2rem;">⚡ GENERUJ NOWE</button>
-            <button id="copyBtn" class="orange" style="padding: 1rem 2.5rem; font-size: 1.2rem;">📋 SKOPIUJ</button>
-            <button id="googleBtn" class="purple" style="padding: 1rem 2.5rem; font-size: 1.2rem;">🔍 GOOGLE TEST</button>
-          </div>
-        </div>
-      </div>
+  <!-- EXISTING -->
+  <div id="existingTab">
+    <pre id="existingJson">{}</pre>
+  </div>
 
-      <!-- TABS -->
-      <div style="display: flex; background: rgba(255,255,255,0.1); border-radius: 1.5rem; overflow: hidden; margin-bottom: 2rem;">
-        <button class="tab active" data-tab="existing" style="flex: 1;">📊 Istniejące</button>
-        <button class="tab" data-tab="suggestions" style="flex: 1;">🔧 Sugestie</button>
-        <button class="tab" data-tab="generated" style="flex: 1;">✨ Wygenerowane</button>
-        <button class="tab" data-tab="debug" style="flex: 1;">🐛 Debug</button>
-      </div>
+  <!-- GENERATED -->
+  <div id="generatedTab" class="hidden">
+    <pre id="generatedJson">Kliknij GENERUJ</pre>
+  </div>
 
-      <!-- TAB CONTENT -->
-      <div id="tabContent">
-        <div id="existingTab" class="tab-panel active">
-          <div style="display: flex; gap: 2rem; flex-direction: column; lg:flex-row;">
-            <div style="flex: 1;">
-              <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem;">Znaleziono JSON-LD:</h3>
-              <pre id="jsonPreview">{ "@type": "Loading..." }</pre>
-            </div>
-            <div style="flex: 1; padding: 2rem; background: rgba(255,255,255,0.05); border-radius: 1.5rem;">
-              <h4 style="font-size: 1.3rem; font-weight: bold; margin-bottom: 1rem;">Statystyki:</h4>
-              <div id="statsPanel"></div>
-            </div>
-          </div>
-        </div>
+</div>
 
-        <div id="suggestionsTab" class="tab-panel">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-            <div>
-              <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem;">🚀 Sugestie optymalizacji:</h3>
-              <div id="suggestionsList"></div>
-            </div>
-            <div>
-              <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem;">⚠️ Brakujące pola:</h3>
-              <div id="missingList"></div>
-            </div>
-          </div>
-        </div>
+</div>
 
-        <div id="generatedTab" class="tab-panel">
-          <div style="background: rgba(16,185,129,0.2); border: 3px solid rgba(16,185,129,0.6); border-radius: 2rem; padding: 3rem; text-align: center;">
-            <h3 style="font-size: 2rem; font-weight: bold; margin-bottom: 2rem;">✅ GOTOWE Schema.org JSON-LD</h3>
-            <pre id="generatedCode">Kliknij "GENERUJ NOWE" aby utworzyć kod</pre>
-            <button id="copyFullCode" class="success" style="margin-top: 2rem; padding: 1.2rem 3rem; font-size: 1.3rem;">📋 SKOPIUJ PEŁNY KOD</button>
-            <p style="margin-top: 1.5rem; opacity: 0.9; font-size: 1.1rem;">Wklej do &lt;head&gt; &lt;script type="application/ld+json"&gt;...&lt;/script&gt;</p>
-          </div>
-        </div>
+<script>
+let data = null;
+let generated = null;
 
-        <div id="debugTab" class="tab-panel">
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
-            <div style="padding: 2rem; background: rgba(255,255,255,0.05); border-radius: 1.5rem;">
-              <h4 style="font-weight: bold; margin-bottom: 1rem;">Meta dane</h4>
-              <div id="debugMeta"></div>
-            </div>
-            <div style="padding: 2rem; background: rgba(255,255,255,0<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SCHEMARCHITECT v40 - 100% DZIAŁAJĄCE</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        :root {
-            --bg-primary: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
-            --glass: rgba(255,255,255,0.08);
-            --border-glass: rgba(255,255,255,0.12);
-            --blue-glow: rgba(59, 130, 246, 0.4);
-        }
-        * { box-sizing: border-box; }
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background: var(--bg-primary);
-            color: white;
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-        }
-        .glass {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border-glass);
-            border-radius: 24px;
-        }
-        button {
-            border: none;
-            border-radius: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 16px;
-            padding: 14px 24px;
-            min-height: 56px;
-        }
-        button:hover { transform: translateY(-2px); }
-        button:active { transform: translateY(0); }
-        .primary-btn {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            box-shadow: 0 12px 32px var(--blue-glow);
-            color: white;
-        }
-        .success-btn {
-            background: linear-gradient(135deg, #10b981, #059669);
-            box-shadow: 0 12px 32px rgba(16,185,129,0.4);
-            color: white;
-        }
-        pre {
-            background: rgba(15,23,42,0.9);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 16px;
-            padding: 24px;
-            font-family: 'SF Mono', Monaco, monospace;
-            font-size: 14px;
-            line-height: 1.6;
-            overflow: auto;
-            max-height: 400px;
-        }
-        .toast {
-            position: fixed;
-            top: 24px;
-            right: 24px;
-            z-index: 10000;
-            min-width: 320px;
-            padding: 20px 24px;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            transform: translateX(400px);
-            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        .toast.show { transform: translateX(0); }
-        .tab-active {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
-            color: white !important;
-            box-shadow: 0 8px 24px var(--blue-glow) !important;
-        }
-    </style>
-</head>
-<body>
-    <div class="max-w-4xl mx-auto space-y-12 py-12">
-        
-        <!-- HEADER -->
-        <div class="text-center space-y-6">
-            <h1 class="text-6xl font-black bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent drop-shadow-2xl">
-                SCHEMARCHITECT v40
-            </h1>
-            <p class="text-2xl opacity-90 max-w-2xl mx-auto leading-relaxed">
-                Analiza + generowanie Schema.org JSON-LD. <strong>Kliknij i DZIAŁA.</strong>
-            </p>
-        </div>
+async function analyze(url){
+  await new Promise(r=>setTimeout(r,800));
+  return {
+    type:'Product',
+    schemas:[{ "@type":"Product", name:"Demo"}]
+  }
+}
 
-        <!-- INPUT -->
-        <div class="glass p-12 shadow-2xl">
-            <div class="flex flex-col lg:flex-row gap-6">
-                <input id="urlInput" type="url" placeholder="https://example.com/produkt" 
-                       class="flex-1 p-6 text-xl bg-white/5 border border-white/20 rounded-2xl focus:border-blue-400 
-                              focus:outline-none focus:ring-4 focus:ring-blue-400/30 transition-all 
-                              placeholder-white/60 font-medium">
-                <button id="startBtn" class="primary-btn text-xl px-12 shadow-2xl flex items-center gap-3 font-bold min-w-[220px]">
-                    🔍 ANALIZUJ TERAZ
-                </button>
-            </div>
-            <div class="flex flex-wrap gap-4 mt-8 text-sm opacity-75 justify-center">
-                <span>Googlebot UA</span>
-                <span>•</span>
-                <span>JSON-LD Extract</span>
-                <span>•</span>
-                <span>E-E-A-T Optymalizacja</span>
-            </div>
-        </div>
+document.getElementById('startBtn').onclick = async ()=>{
+  const url = document.getElementById('urlInput').value;
+  if(!url) return alert('URL required');
 
-        <!-- PROGRESS -->
-        <div id="loader" class="glass p-12 text-center hidden shadow-2xl">
-            <div class="w-24 h-24 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin mx-auto mb-8"></div>
-            <div id="loaderText" class="text-2xl font-bold">Analizuję stronę...</div>
-            <div class="w-full bg-white/10 rounded-full h-4 mt-4 overflow-hidden">
-                <div id="progressFill" class="bg-gradient-to-r from-blue-500 to-cyan-500 h-4 rounded-full transition-all" style="width: 0%"></div>
-            </div>
-        </div>
+  document.getElementById('loader').classList.remove('hidden');
 
-        <!-- RESULTS -->
-        <div id="resultsSection" class="hidden space-y-8">
-            
-            <!-- SUMMARY -->
-            <div class="glass p-12 shadow-2xl">
-                <div class="flex flex-col lg:flex-row gap-8 items-start lg:items-center justify-between">
-                    <div class="flex items-center gap-6">
-                        <div id="pageTypeBadge" class="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-black 
-                                                         font-bold rounded-2xl text-xl shadow-2xl min-w-[140px] text-center">
-                            Product
-                        </div>
-                        <div>
-                            <div id="summaryInfo" class="text-3xl font-black mb-2">1 schemat znaleziony</div>
-                            <div id="eeatScore" class="text-xl opacity-75">E-E-A-T Score: 85%</div>
-                        </div>
-                    </div>
-                    <div class="flex gap-4 flex-wrap">
-                        <button id="generateSchemaBtn" class="success-btn text-xl px-10 shadow-2xl font-bold flex items-center gap-2">
-                            ⚡ WYGENERUJ NOWE
-                        </button>
-                        <button id="copySchemaBtn" class="bg-gradient-to-r from-orange-500 to-orange-600 text-xl px-10 shadow-2xl font-bold flex items-center gap-2">
-                            📋 SKOPIUJ KOD
-                        </button>
-                        <button id="validateGoogleBtn" class="bg-gradient-to-r from-purple-600 to-violet-600 text-xl px-10 shadow-2xl font-bold flex items-center gap-2">
-                            🔍 GOOGLE TEST
-                        </button>
-                    </div>
-                </div>
-            </div>
+  const res = await analyze(url);
+  data = res;
 
-            <!-- TABS -->
-            <div class="glass p-2 flex shadow-2xl">
-                <button class="tab-btn flex-1 p-6 font-bold text-xl rounded-2xl mx-2 tab-active" data-tab="existing">📊 Istniejące Schema</button>
-                <button class="tab-btn flex-1 p-6 font-bold text-xl rounded-2xl mx-2" data-tab="suggestions">🔧 Sugestie</button>
-                <button class="tab-btn flex-1 p-6 font-bold text-xl rounded-2xl mx-2" data-tab="generated">✨ Nowe Schema</button>
-                <button class="tab-btn flex-1 p-6 font-bold text-xl rounded-2xl mx-2" data-tab="debug">🐛 Debug Info</button>
-            </div>
+  document.getElementById('loader').classList.add('hidden');
+  document.getElementById('results').classList.remove('hidden');
 
-            <!-- TAB CONTENTS -->
-            <div class="space-y-8">
-                <!-- EXISTING -->
-                <div id="existingTab" class="tab-panel">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <div class="glass p-8 h-[480px] shadow-2xl">
-                            <h3 class="text-2xl font-bold mb-6 flex items-center gap-4">📜 Znalezione JSON-LD</h3>
-                            <pre id="existingJson">{
-  "@context": "https://schema.org",
-  "@type": "Loading..."
-}</pre>
-                        </div>
-                        <div class="glass p-8 shadow-2xl space-y-6">
-                            <h4 class="text-xl font-bold flex items-center gap-3">📊 Podsumowanie analizy</h4>
-                            <div id="analysisSummary" class="space-y-4 text-lg"></div>
-                        </div>
-                    </div>
-                </div>
+  document.getElementById('type').textContent = res.type;
+  document.getElementById('summary').textContent = res.schemas.length + ' schema';
+  document.getElementById('existingJson').textContent = JSON.stringify(res.schemas,null,2);
+};
 
-                <!-- SUGGESTIONS -->
-                <div id="suggestionsTab" class="tab-panel hidden">
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <div class="glass p-8 shadow-2xl">
-                            <h3 class="text-2xl font-bold mb-8">🚀 Sugestie E-E-A-T</h3>
-                            <div id="suggestionList"></div>
-                        </div>
-                        <div class="glass p-8 shadow-2xl">
-                            <h3 class="text-2xl font-bold mb-8">⚠️ Brakujące pola</h3>
-                            <div id="missingFields"></div>
-                        </div>
-                    </div>
-                </div>
+document.getElementById('generateBtn').onclick = ()=>{
+  if(!data) return;
 
-                <!-- GENERATED -->
-                <div id="generatedTab" class="tab-panel hidden">
-                    <div class="glass p-12 border-4 border-emerald-500/50 shadow-2xl">
-                        <div class="flex justify-between items-center mb-10 pb-8 border-b border-emerald-400/50">
-                            <h3 class="text-3xl font-black flex items-center gap-4">
-                                ✅ Wygenerowane Schema.org JSON-LD
-                            </h3>
-                            <div class="flex gap-3">
-                                <span class="px-6 py-3 bg-emerald-500 text-black font-bold rounded-2xl shadow-lg">VALID</span>
-                                <span class="px-6 py-3 bg-blue-500 text-white font-bold rounded-2xl shadow-lg">@graph</span>
-                            </div>
-                        </div>
-                        <pre id="generatedJson">Kliknij "WYGENERUJ NOWE" aby utworzyć zoptymalizowane schema</pre>
-                        <div class="mt-12 pt-12 border-t-4 border-emerald-400/50 text-center">
-                            <p class="text-2xl font-bold mb-8">Wklej do sekcji <code>&lt;head&gt;</code> strony:</p>
-                            <button id="copyFullScript" class="success-btn text-xl px-16 py-6 font-bold shadow-2xl rounded-3xl mx-auto block mb-4">
-                                📋 SKOPIUJ PEŁNY &lt;script&gt; TAG
-                            </button>
-                        </div>
-                    </div>
-                </div>
+  generated = {
+    "@context":"https://schema.org",
+    "@type":data.type,
+    name:"Generated Schema"
+  };
 
-                <!-- DEBUG -->
-                <div id="debugTab" class="tab-panel hidden">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        <div class="glass p-8">
-                            <h4 class="text-xl font-bold mb-6">📄 Meta dane</h4>
-                            <div id="metaDebug"></div>
-                        </div>
-                        <div class="glass p-8">
-                            <h4 class="text-xl font-bold mb-6">📈 Struktura</h4>
-                            <div id="contentDebug"></div>
-                        </div>
-                        <div class="glass p-8">
-                            <h4 class="text-xl font-bold mb-6">🔍 URL analiza</h4>
-                            <div id="urlDebug"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+  document.getElementById('generatedJson').textContent = JSON.stringify(generated,null,2);
+};
 
-    <!-- TOAST -->
-    <div id="toastContainer">
-        <div id="toast" class="toast glass p-6 shadow-2xl">
-            <div class="flex items-center gap-4">
-                <span id="toastIcon">✅</span>
-                <span id="toastMessage" class="font-bold flex-1"></span>
-                <button id="closeToast" class="text-2xl hover:scale-110">×</button>
-            </div>
-        </div>
-    </div>
+document.getElementById('copyBtn').onclick = ()=>{
+  if(!generated) return alert('Najpierw generuj');
 
-    <script>
-        // ========================= GLOBAL STATE ========================
-        let analysisData = null;
-        let generatedSchema = null;
-        
-        // Schema.org required fields
-        const requiredFields = {
-            Product: ['name', 'image', 'description', 'offers', 'brand'],
-            Article: ['headline', 'image', 'author', 'datePublished'],
-            WebPage: ['name', 'description', 'url']
-        };
-        
-        // PAGE TYPE DETECTION
-        function detectType(url, schemas = []) {
-            const path = new URL(url).pathname.toLowerCase();
-            if (path.includes('product') || path.includes('produkt')) return 'Product';
-            if (path.includes('blog') || path.includes('post')) return 'Article';
-            if (path.includes('category')) return 'CollectionPage';
-            if (schemas.some(s => s['@type'] === 'Product')) return 'Product';
-            return 'WebPage';
-        }
-        
-        // MOCK ANALYSIS (Replace with real API for production)
-        async function analyzeUrl(url) {
-            // Simulate realistic delay
-            await new Promise(resolve => setTimeout(resolve, 1200));
-            
-            const hostname = new URL(url).hostname;
-            const type = detectType(url);
-            
-            return {
-                schemas: [{
-                    '@context': 'https://schema.org',
-                    '@type': type,
-                    name: `Example ${type} from ${hostname}`,
-                    description: 'Detected and analyzed Schema.org structured data',
-                    url: url
-                }],
-                meta: {
-                    title: `${type} Example | ${hostname}`,
-                    description: 'Schema.org optimized page',
-                    ogImage: `https://${hostname}/og-image.jpg`
-                },
-                content: {
-                    h1: [`${type} - ${hostname}`],
-                    products: type === 'Product' ? [{name: 'Test Product', price: '€99'}] : []
-                }
-            };
-        }
-        
-        // GENERATE SUGGESTIONS
-        function getSuggestions(schemas, type) {
-            const allProps = schemas.reduce((acc, s) => ({...acc, ...s}), {});
-            const req = requiredFields[type] || [];
-            const missing = req.filter(field => !allProps[field]);
-            
-            return {
-                missing: missing.map(field => `❌ Missing: <strong>${field}</strong>`),
-                suggestions: [
-                    ...missing,
-                    '🍞 Add BreadcrumbList for navigation',
-                    '🏢 Add Organization (publisher)',
-                    type === 'Product' && '💰 Add offers with price/availability',
-                    '⭐ Add aggregateRating for trust'
-                ].filter(Boolean)
-            };
-        }
-        
-        // GENERATE OPTIMIZED SCHEMA
-        async function generateOptimizedSchema(existing, type, meta, url) {
-            const organization = {
-                '@type': 'Organization',
-                name: meta.title.split('|')[0]?.trim() || 'Company',
-                url: new URL(url).origin,
-                logo: `${new URL(url).origin}/logo.png`
-            };
-            
-            const baseSchema = {
-                '@type': type,
-                '@context': 'https://schema.org',
-                name: meta.title,
-                description: meta.description,
-                url: url,
-                image: meta.ogImage,
-                publisher: organization,
-                mainEntityOfPage: { '@type': 'WebPage', '@id': url }
-            };
-            
-            const graph = {
-                '@graph': [...existing, baseSchema, organization]
-            };
-            
-            try {
-                const compacted = await jsonld.compact(graph, 'https://schema.org');
-                return JSON.stringify(compacted, null, 2);
-            } catch (e) {
-                return JSON.stringify(graph, null, 2);
-            }
-        }
-        
-        // TOAST NOTIFICATION
-        function showToast(icon, message, duration = 3000) {
-            const toast = document.getElementById('toast');
-            const toastIcon = document.getElementById('toastIcon');
-            const toastMessage = document.getElementById('toastMessage');
-            
-            toastIcon.textContent = icon;
-            toastMessage.textContent = message;
-            toast.classList.remove('hidden', 'show');
-            
-            // Force reflow
-            toast.offsetHeight;
-            toast.classList.add('show');
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.classList.add('hidden'), 400);
-            }, duration);
-        }
-        
-        // UPDATE UI WITH RESULTS
-        function updateUI(data) {
-            // Type badge
-            document.getElementById('pageTypeBadge').textContent = data.type;
-            document.getElementById('summaryInfo').textContent = `${data.schemas.length} schema(s) found`;
-            document.getElementById('eeatScore').textContent = 'E-E-A-T Score: 92%';
-            
-            // Existing JSON
-            document.getElementById('existingJson').textContent = JSON.stringify(data.schemas, null, 2);
-            
-            // Analysis summary
-            document.getElementById('analysisSummary').innerHTML = `
-                <div><strong>Schema types:</strong> ${data.schemas.map(s => s['@type']).join(', ')}</div>
-                <div><strong>Suggestions:</strong> ${data.suggestions.length}</div>
-                <div><strong>JSON-LD:</strong> <span style="color:#10b981">VALID</span></div>
-            `;
-            
-            // Suggestions tab
-            document.getElementById('suggestionList').innerHTML = data.suggestions.map(suggestion => 
-                `<div class="p-6 glass rounded-2xl hover:bg-white/20 transition-all border-l-4 border-yellow-400">${suggestion}</div>`
-            ).join('');
-            
-            document.getElementById('missingFields').innerHTML = data.missing.length ? 
-                data.missing.map(field => `<div class="p-6 glass rounded-2xl border-l-4 border-red-400 bg-red-500/10">${field}</div>`).join('') :
-                '<div class="p-8 text-center text-green-400 text-xl font-bold">✅ No missing required fields!</div>';
-        }
-        
-        // MAIN ANALYSIS FUNCTION
-        async function runAnalysis() {
-            const url = document.getElementById('urlInput').value.trim();
-            if (!url || !url.startsWith('http')) {
-                showToast('❌', 'Please enter a valid URL (https://...)');
-                return;
-            }
-            
-            const startBtn = document.getElementById('startBtn');
-            const loader = document.getElementById('loader');
-            const loaderText = document.getElementById('loaderText');
-            const progressFill = document.getElementById('progressFill');
-            
-            // Show loader
-            startBtn.disabled = true;
-            startBtn.innerHTML = '⏳ Analyzing...';
-            loader.classList.remove('hidden');
-            
-            const steps = ['Fetching page...', 'Extracting JSON-LD...', 'E-E-A-T analysis...'];
-            for (let i = 0; i < steps.length; i++) {
-                loaderText.textContent = steps[i];
-                progressFill.style.width = `${((i + 1) / steps.length) * 100}%`;
-                await new Promise(resolve => setTimeout(resolve, 600));
-            }
-            
-            try {
-                const rawData = await analyzeUrl(url);
-                analysisData = {
-                    ...rawData,
-                    type: detectType(url, rawData.schemas),
-                    ...getSuggestions(rawData.schemas, detectType(url, rawData.schemas)),
-                    url: url
-                };
-                
-                document.getElementById('resultsSection').classList.remove('hidden');
-                updateUI(analysisData);
-                showToast('✅', `Analysis complete! Detected: ${analysisData.type}`);
-                
-            } catch (error) {
-                showToast('❌', 'Analysis failed: ' + error.message);
-                console.error('Analysis error:', error);
-            } finally {
-                loader.classList.add('hidden');
-                startBtn.disabled = false;
-                startBtn.innerHTML = '🔍 ANALIZUJ TERAZ';
-            }
-        }
-        
-        // EVENT LISTENERS - ALL WORKING ✅
-        document.getElementById('startBtn').addEventListener('click', runAnalysis);
-        document.getElementById('urlInput').addEventListener('keypress', e => {
-            if (e.key === 'Enter') runAnalysis();
-        });
-        
-        // DEMO BUTTON
-        document.getElementById('demoBtn').addEventListener('click', () => {
-            document.getElementById('urlInput').value = 'https://example.com/produkt-test';
-            setTimeout(runAnalysis, 300);
-        });
-        
-        // TABS
-        document.addEventListener('click', e => {
-            if (e.target.classList.contains('tab-btn')) {
-                document.querySelectorAll('.tab-btn').forEach(btn => {
-                    btn.classList.remove('tab-active');
-                });
-                e.target.classList.add('tab-active');
-                
-                document.querySelectorAll('.tab-panel').forEach(panel => {
-                    panel.classList.add('hidden');
-                });
-                document.getElementById(e.target.dataset.tab + 'Tab').classList.remove('hidden');
-            }
-        });
-        
-        // GENERATE SCHEMA
-        document.getElementById('generateSchemaBtn').addEventListener('click', async () => {
-            if (!analysisData) {
-                showToast('ℹ️', 'Run analysis first');
-                return;
-            }
-            
-            showToast('⚡', 'Generating optimized Schema.org...');
-            try {
-                generatedSchema = await generateOptimizedSchema(
-                    analysisData.schemas,
-                    analysisData.type,
-                    analysisData.meta,
-                    analysisData.url
-                );
-                document.getElementById('generatedJson').textContent = generatedSchema;
-                document.querySelector('[data-tab="generated"]').click();
-                showToast('✅', 'Schema generated successfully!');
-            } catch (error) {
-                showToast('❌', 'Generation failed');
-                console.error(error);
-            }
-        });
-        
-        // COPY BUTTONS
-        document.getElementById('copySchemaBtn').addEventListener('click', () => {
-            if (!generatedSchema) {
-                showToast('ℹ️', 'Generate schema first');
-                return;
-            }
-            copyToClipboard(generatedSchema);
-        });
-        
-        document.getElementById('copyFullScript').addEventListener('click', () => {
-            if (!generatedSchema) {
-                showToast('ℹ️', 'Generate schema first');
-                return;
-            }
-            const fullScript = `<script type="application/ld+json">\n${generatedSchema}\n</script>`;
-            copyToClipboard(fullScript);
-        });
-        
-        // GOOGLE VALIDATOR
-        document.getElementById('validateGoogleBtn').addEventListener('click', () => {
-            if (analysisData?.url) {
-                window.open(`https://search.google.com/test/rich-results?url=${encodeURIComponent(analysisData.url)}`, '_blank');
-                showToast('🔍', 'Opened Google Rich Results Test');
-            }
-        });
-        
-        // UNIVERSAL COPY FUNCTION
-        function copyToClipboard(text) {
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(text).then(() => {
-                    showToast('📋', 'Copied to clipboard!');
-                }).catch(err => {
-                    fallbackCopyTextToClipboard(text);
-                });
-            } else {
-                fallbackCopyTextToClipboard(text);
-            }
-        }
-        
-        function fallbackCopyTextToClipboard(text) {
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            textArea.style.top = '0';
-            textArea.style.left = '0';
-            textArea.style.position = 'fixed';
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            try {
-                document.execCommand('copy');
-                showToast('📋', 'Copied (fallback method)');
-            } catch (err) {
-                showToast('⚠️', 'Copy failed - select and Ctrl+C');
-                textArea.select();
-            }
-            document.body.removeChild(textArea);
-        }
-        
-        // TOAST CLOSE
-        document.getElementById('closeToast').addEventListener('click', () => {
-            document.getElementById('toast').classList.remove('show');
-        });
-        
-        console.log('✅ SCHEMARCHITECT v40 - ALL BUTTONS WORKING');
-    </script>
+  navigator.clipboard.writeText(JSON.stringify(generated,null,2));
+};
+
+document.querySelectorAll('.tab').forEach(btn=>{
+  btn.onclick = ()=>{
+    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('tab-active'));
+    btn.classList.add('tab-active');
+
+    document.getElementById('existingTab').classList.add('hidden');
+    document.getElementById('generatedTab').classList.add('hidden');
+
+    document.getElementById(btn.dataset.tab+'Tab').classList.remove('hidden');
+  }
+});
+</script>
+
 </body>
 </html>
