@@ -1,6 +1,235 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SCHEMARCHITECT v40 - NATYCHMIAST DZIAŁA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, sans-serif;
+      background: linear-gradient(135deg, #1e1b4b 0%, #3b82f6 50%, #1e293b 100%);
+      color: white;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    .glass {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 2rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    button {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 1rem;
+      font-weight: 600;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 10px 30px rgba(59,130,246,0.3);
+    }
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(59,130,246,0.5);
+    }
+    button:active {
+      transform: translateY(-1px);
+    }
+    button.success {
+      background: linear-gradient(135deg, #10b981, #059669);
+      box-shadow: 0 10px 30px rgba(16,185,129,0.3);
+    }
+    button.orange {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      box-shadow: 0 10px 30px rgba(245,158,11,0.3);
+    }
+    button.purple {
+      background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+      box-shadow: 0 10px 30px rgba(139,92,246,0.3);
+    }
+    pre {
+      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 1rem;
+      padding: 2rem;
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      max-height: 500px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .tab {
+      flex: 1;
+      padding: 1.5rem;
+      margin: 0 0.5rem;
+      border-radius: 1rem;
+      font-weight: 600;
+      font-size: 1rem;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.2);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .tab.active {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      box-shadow: 0 10px 30px rgba(59,130,246,0.5);
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    #toast {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      background: rgba(16,185,129,0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 1rem;
+      padding: 1.5rem 2rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      transform: translateX(100%);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      z-index: 10000;
+      min-width: 300px;
+    }
+    #toast.show {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    input {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      color: white;
+      font-size: 1.2rem;
+      width: 100%;
+    }
+    input::placeholder { color: rgba(255,255,255,0.6); }
+    input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 4px rgba(59,130,246,0.2);
+    }
+  </style>
+</head>
+<body>
+  <main class="max-w-6xl mx-auto space-y-12">
+    
+    <!-- TYTUŁ -->
+    <div class="text-center py-16">
+      <h1 class="text-6xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 bg-clip-text text-transparent mb-8">
+        SCHEMARCHITECT v40
+      </h1>
+      <p class="text-2xl max-w-3xl mx-auto opacity-90 leading-relaxed">
+        Kliknij <strong>KAŻDY</strong> przycisk – DZIAŁA NATYCHMIAST
+      </p>
+    </div>
+
+    <!-- INPUT + GŁÓWNY BUTTON -->
+    <div style="background: rgba(255,255,255,0.08); backdrop-filter: blur(30px); border-radius: 2rem; padding: 3rem; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 30px 80px rgba(0,0,0,0.4);">
+      <div style="display: flex; flex-direction: column; gap: 2rem; align-items: center;">
+        <input id="urlField" type="url" placeholder="Wpisz URL: https://example.com/produkt" 
+               style="flex: 1; min-width: 400px;">
+        <button id="analyzeButton" style="min-width: 300px; padding: 1.5rem 3rem; font-size: 1.4rem;">
+          🚀 ANALIZUJ STRONĘ TERAZ
+        </button>
+        <button id="quickDemo" style="background: linear-gradient(135deg, #ef4444, #dc2626); box-shadow: 0 10px 30px rgba(239,68,68,0.4); min-width: 200px;">
+          ⚡ SZYBKI TEST
+        </button>
+      </div>
+    </div>
+
+    <!-- LOADING -->
+    <div id="loadingScreen" style="display: none; text-align: center; padding: 4rem; background: rgba(255,255,255,0.05); border-radius: 2rem; border: 2px solid #3b82f6;">
+      <div style="width: 80px; height: 80px; border: 4px solid #3b82f6; border-top: 4px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 2rem;"></div>
+      <div id="loadingText" style="font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem;">Analizuję Schema.org...</div>
+      <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
+        <div id="progressBar" style="height: 100%; background: linear-gradient(90deg, #3b82f6, #60a5fa); width: 0%; transition: width 0.3s; border-radius: 4px;"></div>
+      </div>
+    </div>
+
+    <!-- WYNIKI -->
+    <div id="results" style="display: none;">
+      
+      <!-- SUMMARY -->
+      <div style="background: rgba(16,185,129,0.2); border: 2px solid rgba(16,185,129,0.5); border-radius: 2rem; padding: 3rem; margin-bottom: 2rem;">
+        <div style="display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; justify-content: space-between;">
+          <div>
+            <div id="detectedType" style="display: inline-block; background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 1rem 2rem; border-radius: 3rem; font-weight: bold; font-size: 1.3rem; margin-bottom: 1rem;">Product</div>
+            <div id="summaryStats" style="font-size: 1.8rem; font-weight: bold;">1 schemat | 3 sugestie</div>
+          </div>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <button id="generateBtn" class="success" style="padding: 1rem 2.5rem; font-size: 1.2rem;">⚡ GENERUJ NOWE</button>
+            <button id="copyBtn" class="orange" style="padding: 1rem 2.5rem; font-size: 1.2rem;">📋 SKOPIUJ</button>
+            <button id="googleBtn" class="purple" style="padding: 1rem 2.5rem; font-size: 1.2rem;">🔍 GOOGLE TEST</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABS -->
+      <div style="display: flex; background: rgba(255,255,255,0.1); border-radius: 1.5rem; overflow: hidden; margin-bottom: 2rem;">
+        <button class="tab active" data-tab="existing" style="flex: 1;">📊 Istniejące</button>
+        <button class="tab" data-tab="suggestions" style="flex: 1;">🔧 Sugestie</button>
+        <button class="tab" data-tab="generated" style="flex: 1;">✨ Wygenerowane</button>
+        <button class="tab" data-tab="debug" style="flex: 1;">🐛 Debug</button>
+      </div>
+
+      <!-- TAB CONTENT -->
+      <div id="tabContent">
+        <div id="existingTab" class="tab-panel active">
+          <div style="display: flex; gap: 2rem; flex-direction: column; lg:flex-row;">
+            <div style="flex: 1;">
+              <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem;">Znaleziono JSON-LD:</h3>
+              <pre id="jsonPreview">{ "@type": "Loading..." }</pre>
+            </div>
+            <div style="flex: 1; padding: 2rem; background: rgba(255,255,255,0.05); border-radius: 1.5rem;">
+              <h4 style="font-size: 1.3rem; font-weight: bold; margin-bottom: 1rem;">Statystyki:</h4>
+              <div id="statsPanel"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="suggestionsTab" class="tab-panel">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <div>
+              <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem;">🚀 Sugestie optymalizacji:</h3>
+              <div id="suggestionsList"></div>
+            </div>
+            <div>
+              <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem;">⚠️ Brakujące pola:</h3>
+              <div id="missingList"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="generatedTab" class="tab-panel">
+          <div style="background: rgba(16,185,129,0.2); border: 3px solid rgba(16,185,129,0.6); border-radius: 2rem; padding: 3rem; text-align: center;">
+            <h3 style="font-size: 2rem; font-weight: bold; margin-bottom: 2rem;">✅ GOTOWE Schema.org JSON-LD</h3>
+            <pre id="generatedCode">Kliknij "GENERUJ NOWE" aby utworzyć kod</pre>
+            <button id="copyFullCode" class="success" style="margin-top: 2rem; padding: 1.2rem 3rem; font-size: 1.3rem;">📋 SKOPIUJ PEŁNY KOD</button>
+            <p style="margin-top: 1.5rem; opacity: 0.9; font-size: 1.1rem;">Wklej do &lt;head&gt; &lt;script type="application/ld+json"&gt;...&lt;/script&gt;</p>
+          </div>
+        </div>
+
+        <div id="debugTab" class="tab-panel">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            <div style="padding: 2rem; background: rgba(255,255,255,0.05); border-radius: 1.5rem;">
+              <h4 style="font-weight: bold; margin-bottom: 1rem;">Meta dane</h4>
+              <div id="debugMeta"></div>
+            </div>
+            <div style="padding: 2rem; background: rgba(255,255,255,0<!DOCTYPE html>
+<html lang="pl">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SCHEMARCHITECT v40 - 100% DZIAŁAJĄCE</title>
